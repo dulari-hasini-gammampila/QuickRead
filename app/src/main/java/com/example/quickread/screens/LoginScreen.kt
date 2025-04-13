@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,23 +22,41 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoginScreen(onLoginComplete: () -> Unit) {
-    var name by remember { mutableStateOf("") }
+fun LoginScreen(
+    onLogin: () -> Unit,
+    onRegister: () -> Unit
+) {
+    var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf("") }
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize().padding(16.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Login Screen UI
-        Text(text = "Login", style = MaterialTheme.typography.headlineLarge)
+        Text("Login", style = MaterialTheme.typography.headlineLarge)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (error.isNotEmpty()) {
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+
         OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Name") },
+            value = username,
+            onValueChange = { username = it },
+            label = { Text("Username") },
             modifier = Modifier.fillMaxWidth()
         )
+
         Spacer(modifier = Modifier.height(8.dp))
+
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -45,12 +64,29 @@ fun LoginScreen(onLoginComplete: () -> Unit) {
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
+
         Spacer(modifier = Modifier.height(16.dp))
+
         Button(
-            onClick = { onLoginComplete() },  // Navigates to Home Screen
+            onClick = {
+                if (username.isEmpty() || password.isEmpty()) {
+                    error = "Please enter username and password"
+                } else {
+                    // TODO: Validate credentials
+                    onLogin()
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextButton(
+            onClick = onRegister
+        ) {
+            Text("Don't have an account? Register")
         }
     }
 }
