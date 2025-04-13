@@ -11,6 +11,7 @@ import com.example.quickread.screens.*
 import com.example.quickread.ui.theme.QuickReadTheme
 import androidx.compose.ui.tooling.preview.Preview
 
+
 @Composable
 fun QuickReadApp() {
     val navController = rememberNavController()
@@ -27,29 +28,57 @@ fun QuickReadApp() {
                 }
 
                 composable("login") {
-                    LoginScreen {
-                        navController.navigate("home") {
-                            popUpTo("login") { inclusive = true }
+                    LoginScreen(
+                        onLogin = {
+                            navController.navigate("home") {
+                                popUpTo("login") { inclusive = true }
+                            }
+                        },
+                        onRegister = {
+                            navController.navigate("register")
                         }
-                    }
+                    )
+                }
+
+                composable("register") {
+                    RegisterScreen(
+                        onRegisterComplete = {
+                            navController.navigate("home") {
+                                popUpTo("register") { inclusive = true }
+                            }
+                        },
+                        onBackToLogin = {
+                            navController.popBackStack()
+                        }
+                    )
                 }
 
                 composable("home") {
-                    HomeScreen(navController)
+                    HomeScreen(navController = navController)
                 }
 
                 composable("bookDetail/{bookId}") { backStackEntry ->
                     val bookId = backStackEntry.arguments?.getString("bookId")
-                    BookDetailScreen(bookId = bookId ?: "", navController = navController)
+                    BookDetailScreen(
+                        bookId = bookId ?: "",
+                        onReadBook = { bookId -> navController.navigate("reading/$bookId") },
+                        onBack = { navController.popBackStack() }
+                    )
                 }
 
-                composable("currentlyReading/{bookId}") { backStackEntry ->
+                composable("reading/{bookId}") { backStackEntry ->
                     val bookId = backStackEntry.arguments?.getString("bookId")
-                    CurrentlyReadingScreen(bookId = bookId ?: "")
+                    ReadingScreen(
+                        bookId = bookId ?: "",
+                        onBack = { navController.popBackStack() }
+                    )
                 }
 
                 composable("recommendations") {
-                    RecommendationsScreen()
+                    RecommendationsScreen(
+                        onBookClick = { bookId -> navController.navigate("bookDetail/$bookId") },
+                        onBack = { navController.popBackStack() }
+                    )
                 }
             }
         }
