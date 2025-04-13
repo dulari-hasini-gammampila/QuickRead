@@ -1,16 +1,40 @@
 package com.example.quickread.data
 
-import com.example.quickread.models.Book
 
 object BookRepository {
-    val books = listOf(
-        Book("The Village in the Jungle", "Leonard Woolf", "Currently Reading", 65),
-        Book("Goodnight Moon", "Margaret Wise Brown", "Want to Read", 0),
-        Book("Siddhartha", " Hermann Hesse", "Finished", 100)
+    // Make books private and expose through functions
+    private val _books = listOf(
+        Book(
+            id = "1",
+            title = "The Village in the Jungle",
+            author = "Leonard Woolf",
+            genre = "Fiction",
+            description = "A classic novel about life in a Sri Lankan village...",
+            status = "Currently Reading",
+            progress = 65
+        ),
+        Book(
+            id = "2",
+            title = "Sample Book 2",
+            author = "Author 2",
+            description = "Another sample book description",
+            genre = "Non-Fiction"
+        )
     )
 
-    // Function to get a book by its title
-    fun getBookByTitle(title: String): Book? {
-        return books.find { it.title == title }
-    }
+    fun getBooks(): List<Book> = _books
+    fun getBookById(id: String): Book? = _books.find { it.id == id }
+    fun getBooksByGenre(genre: String): List<Book> = _books.filter { it.genre.equals(genre, ignoreCase = true) }
+    fun getRecommendedBooks(): List<Book> = _books.shuffled().take(5)
 }
+
+data class Book(
+    val id: String,
+    val title: String,
+    val author: String,
+    val description: String,
+    val genre: String,
+    val status: String = "Available",
+    val progress: Int = 0,
+    val isFavorite: Boolean = false
+)
