@@ -1,22 +1,36 @@
 package com.example.quickread.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Surface
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.quickread.screens.*
-import com.example.quickread.ui.theme.QuickReadTheme
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.quickread.ui.theme.Primary
+import com.example.quickread.ui.theme.Secondary
+import com.example.quickread.ui.theme.Background
+import androidx.compose.ui.graphics.Color
+
 
 
 @Composable
 fun QuickReadApp() {
     val navController = rememberNavController()
 
-    QuickReadTheme {
+    MaterialTheme(
+        colorScheme = lightColorScheme(
+            primary = Primary,
+            secondary = Secondary,
+            background = Background,
+            surface = Color.White,
+            onPrimary = Color.White,
+            onSecondary = Color.Black,
+            onSurface = Color.Black,
+            onBackground = Color.Black
+        )
+    ) {
         Surface(modifier = Modifier.fillMaxSize()) {
             NavHost(navController = navController, startDestination = "splash") {
                 composable("splash") {
@@ -40,28 +54,21 @@ fun QuickReadApp() {
                     )
                 }
 
-                composable("register") {
-                    RegisterScreen(
-                        onRegisterComplete = {
-                            navController.navigate("home") {
-                                popUpTo("register") { inclusive = true }
-                            }
-                        },
-                        onBackToLogin = {
-                            navController.popBackStack()
-                        }
-                    )
-                }
-
                 composable("home") {
                     HomeScreen(navController = navController)
+                }
+
+                composable("currentlyReading") {
+                    CurrentlyReadingScreen(navController = navController)
                 }
 
                 composable("bookDetail/{bookId}") { backStackEntry ->
                     val bookId = backStackEntry.arguments?.getString("bookId")
                     BookDetailScreen(
                         bookId = bookId ?: "",
-                        onReadBook = { bookId -> navController.navigate("reading/$bookId") },
+                        onReadBook = { bookId ->
+                            navController.navigate("reading/$bookId")
+                        },
                         onBack = { navController.popBackStack() }
                     )
                 }
@@ -76,17 +83,22 @@ fun QuickReadApp() {
 
                 composable("recommendations") {
                     RecommendationsScreen(
-                        onBookClick = { bookId -> navController.navigate("bookDetail/$bookId") },
+                        onBookClick = { bookId ->
+                            navController.navigate("bookDetail/$bookId")
+                        },
                         onBack = { navController.popBackStack() }
                     )
                 }
+
+                composable("register") {
+                    RegisterScreen(navController = navController) {
+                        navController.navigate("home") {
+                            popUpTo("register") { inclusive = true }
+                        }
+                    }
+                }
+
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewQuickReadApp() {
-    QuickReadApp()
 }

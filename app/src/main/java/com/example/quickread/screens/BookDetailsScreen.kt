@@ -9,11 +9,9 @@ import androidx.compose.ui.unit.dp
 import com.example.quickread.data.BookRepository
 
 @Composable
-fun BookDetailScreen(bookId: String, navController: NavController) {
-    // Get the book by its title from the repository
-    val book = BookRepository.getBookByTitle(bookId)
+fun BookDetailScreen(bookId: String, onReadBook: (String) -> Unit, onBack: () -> Unit) {
+    val book = BookRepository.getBookById(bookId)
 
-    // Show a message if the book is not found
     if (book == null) {
         Text("Book not found", style = MaterialTheme.typography.headlineLarge)
         return
@@ -30,19 +28,9 @@ fun BookDetailScreen(bookId: String, navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Review section
-        Text("Write a Review", style = MaterialTheme.typography.headlineSmall)
-        OutlinedTextField(
-            value = "",
-            onValueChange = {},
-            label = { Text("Your Review") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
         // Continue Reading button
-        Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { navController.navigate("currentlyReading/${book.title}") }, // Navigate to CurrentlyReadingScreen
+            onClick = { onReadBook(bookId) }, // Navigate to ReadingScreen
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Continue Reading")
@@ -51,10 +39,31 @@ fun BookDetailScreen(bookId: String, navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { /* Action to save the review */ },
+            onClick = onBack,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Save Review")
+            Text("Back")
         }
+
+        Button(
+            onClick = {
+                // Toggle favorite state - replace with real repo update later
+                val updatedBook = book.copy(isFavorite = !book.isFavorite)
+                // Update your BookRepository if mutable
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(if (book.isFavorite) "Remove from Favorites" else "Add to Favorites")
+        }
+        Button(
+            onClick = {
+                BookRepository.toggleFavorite(bookId)
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(if (book.isFavorite) "Remove from Favorites" else "Add to Favorites")
+        }
+
+
     }
 }

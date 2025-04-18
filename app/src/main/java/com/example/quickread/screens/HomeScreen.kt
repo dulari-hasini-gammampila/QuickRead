@@ -18,39 +18,31 @@ import com.example.quickread.data.Book
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    val books = BookRepository.getBooks()  // Use the centralized book list
-
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text("My Library", style = MaterialTheme.typography.headlineLarge)
+        Text("Welcome to QuickRead", style = MaterialTheme.typography.headlineLarge)
 
-        // Display the books the user is currently reading
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Currently Reading", style = MaterialTheme.typography.headlineSmall)
+        Spacer(modifier = Modifier.height(24.dp))
 
-        LazyColumn {
-            // Correctly iterate through the list of books
-            items(books) { book ->
-                BookItem(book = book, navController = navController)
-            }
+        Button(
+            onClick = { navController.navigate("currentlyReading") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Currently Reading")
         }
 
-        // Navigation button for recommendations
         Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             onClick = { navController.navigate("recommendations") },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Go to Recommendations")
+            Text("Browse Books")
         }
-    }
-}
 
-@Composable
-fun BookItem(book: Book, navController: NavController) {
-    Button(
-        onClick = { navController.navigate("bookDetail/${book.title}") }, // Pass the book title
-        modifier = Modifier.fillMaxWidth().padding(8.dp)
-    ) {
-        Text(book.title)  // Display the book title in the button
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(onClick = { navController.popBackStack() }) {
+            Text("Back")
+        }
     }
 }

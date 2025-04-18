@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RecommendationsScreen() {
+fun RecommendationsScreen(onBookClick: (String) -> Unit, onBack: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
             text = "Recommended for You",
@@ -17,17 +17,25 @@ fun RecommendationsScreen() {
             modifier = Modifier.padding(16.dp)
         )
 
-        // Display recommended books horizontally
         LazyRow {
             items(listOf("Book 1", "Book 2", "Book 3")) { book ->
-                RecommendedBookItem(book)
+                RecommendedBookItem(book, onBookClick)
             }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = onBack,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Back")
         }
     }
 }
 
 @Composable
-fun RecommendedBookItem(book: String) {
+fun RecommendedBookItem(book: String, onBookClick: (String) -> Unit) {
     Card(
         modifier = Modifier
             .width(200.dp)
@@ -36,6 +44,13 @@ fun RecommendedBookItem(book: String) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(book, style = MaterialTheme.typography.headlineSmall)
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = { onBookClick(book) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("View Details")
+            }
         }
     }
 }
