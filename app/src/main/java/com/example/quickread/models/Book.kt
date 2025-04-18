@@ -10,7 +10,7 @@ data class Book(
     val progress: Int = 0,                  // Percentage of progress
     val isFavorite: Boolean = false,        // Favorite toggle
     val bookmarked: Boolean = false,        // Bookmark toggle
-    val lastPageRead: Int = 0,              // Last page number read
+    val lastPageRead: Int = 1,              // Last page number read
     val coverImage: String = "cover1",      // Name of drawable image (without extension)
     val story: List<String> = listOf()      // Full story pages
 )
