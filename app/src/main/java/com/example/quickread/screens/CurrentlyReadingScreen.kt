@@ -1,8 +1,22 @@
 package com.example.quickread.screens
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -48,7 +62,7 @@ fun CurrentlyReadingScreen(navController: NavController) {
 
 @Composable
 fun MyBooksTab(navController: NavController) {
-    val books = remember { BookRepository.getBooks().filter { it.status == "Currently Reading" } }
+    val books = BookRepository.getBooks().filter { it.status == "Currently Reading" }
 
     Column {
         if (books.isEmpty()) {
@@ -62,7 +76,10 @@ fun MyBooksTab(navController: NavController) {
                         Text("📘 ${book.title}", style = MaterialTheme.typography.titleLarge)
                         Text("Progress: ${book.progress}%", style = MaterialTheme.typography.bodyMedium)
                         Spacer(modifier = Modifier.height(8.dp))
-                        Button(onClick = { navController.navigate("reading/${book.id}") }) {
+                        Button(onClick = {
+                            BookRepository.addToCurrentlyReading(book)
+                            navController.navigate("reading/${book.id}")
+                        }) {
                             Text("Continue Reading")
                         }
                     }
@@ -74,7 +91,7 @@ fun MyBooksTab(navController: NavController) {
 
 @Composable
 fun BookmarksTab(navController: NavController) {
-    val books = remember { BookRepository.getBookmarkedBooks() }
+    val books = BookRepository.getBookmarkedBooks()
 
     Column {
         if (books.isEmpty()) {
@@ -96,7 +113,7 @@ fun BookmarksTab(navController: NavController) {
 
 @Composable
 fun FavoritesTab(navController: NavController) {
-    val books = remember { BookRepository.getFavoriteBooks() }
+    val books = BookRepository.getFavoriteBooks()
 
     Column {
         if (books.isEmpty()) {
